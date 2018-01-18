@@ -48,18 +48,18 @@ var _sanitize2 = _interopRequireDefault(_sanitize);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RunnableStats = function () {
-    function RunnableStats(type) {
+    function RunnableStats(type, start) {
         (0, _classCallCheck3.default)(this, RunnableStats);
 
         this.type = type;
-        this.start = new Date();
+        this.start = start || new Date();
         this._duration = 0;
     }
 
     (0, _createClass3.default)(RunnableStats, [{
         key: 'complete',
-        value: function complete() {
-            this.end = new Date();
+        value: function complete(end) {
+            this.end = end || new Date();
             this._duration = this.end - this.start;
         }
     }, {
@@ -80,7 +80,7 @@ var RunnerStats = function (_RunnableStats) {
     function RunnerStats(runner) {
         (0, _classCallCheck3.default)(this, RunnerStats);
 
-        var _this = (0, _possibleConstructorReturn3.default)(this, (RunnerStats.__proto__ || (0, _getPrototypeOf2.default)(RunnerStats)).call(this, 'runner'));
+        var _this = (0, _possibleConstructorReturn3.default)(this, (RunnerStats.__proto__ || (0, _getPrototypeOf2.default)(RunnerStats)).call(this, 'runner', runner._timestamp));
 
         _this.uid = ReporterStats.getIdentifier(runner);
         _this.cid = runner.cid;
@@ -100,7 +100,7 @@ var SpecStats = function (_RunnableStats2) {
     function SpecStats(runner) {
         (0, _classCallCheck3.default)(this, SpecStats);
 
-        var _this2 = (0, _possibleConstructorReturn3.default)(this, (SpecStats.__proto__ || (0, _getPrototypeOf2.default)(SpecStats)).call(this, 'spec'));
+        var _this2 = (0, _possibleConstructorReturn3.default)(this, (SpecStats.__proto__ || (0, _getPrototypeOf2.default)(SpecStats)).call(this, 'spec', runner._timestamp));
 
         _this2.uid = ReporterStats.getIdentifier(runner);
         _this2.files = runner.specs;
@@ -119,7 +119,7 @@ var SuiteStats = function (_RunnableStats3) {
     function SuiteStats(runner) {
         (0, _classCallCheck3.default)(this, SuiteStats);
 
-        var _this3 = (0, _possibleConstructorReturn3.default)(this, (SuiteStats.__proto__ || (0, _getPrototypeOf2.default)(SuiteStats)).call(this, 'suite'));
+        var _this3 = (0, _possibleConstructorReturn3.default)(this, (SuiteStats.__proto__ || (0, _getPrototypeOf2.default)(SuiteStats)).call(this, 'suite', runner._timestamp));
 
         _this3.uid = ReporterStats.getIdentifier(runner);
         _this3.title = runner.title;
@@ -137,7 +137,7 @@ var TestStats = function (_RunnableStats4) {
     function TestStats(runner) {
         (0, _classCallCheck3.default)(this, TestStats);
 
-        var _this4 = (0, _possibleConstructorReturn3.default)(this, (TestStats.__proto__ || (0, _getPrototypeOf2.default)(TestStats)).call(this, 'test'));
+        var _this4 = (0, _possibleConstructorReturn3.default)(this, (TestStats.__proto__ || (0, _getPrototypeOf2.default)(TestStats)).call(this, 'test', runner._timestamp));
 
         _this4.uid = ReporterStats.getIdentifier(runner);
         _this4.title = runner.title;
@@ -156,7 +156,7 @@ var HookStats = function (_RunnableStats5) {
     function HookStats(runner) {
         (0, _classCallCheck3.default)(this, HookStats);
 
-        var _this5 = (0, _possibleConstructorReturn3.default)(this, (HookStats.__proto__ || (0, _getPrototypeOf2.default)(HookStats)).call(this, 'hook'));
+        var _this5 = (0, _possibleConstructorReturn3.default)(this, (HookStats.__proto__ || (0, _getPrototypeOf2.default)(HookStats)).call(this, 'hook', runner._timestamp));
 
         _this5.uid = ReporterStats.getIdentifier(runner);
         _this5.title = runner.title;
@@ -335,7 +335,7 @@ var ReporterStats = function (_RunnableStats6) {
                 return;
             }
 
-            hookStats.complete();
+            hookStats.complete(runner._timestamp);
             this.counts.hooks++;
         }
     }, {
@@ -500,7 +500,7 @@ var ReporterStats = function (_RunnableStats6) {
     }, {
         key: 'testEnd',
         value: function testEnd(runner) {
-            this.getTestStats(runner).complete();
+            this.getTestStats(runner).complete(runner._timestamp);
             this.counts.tests++;
             if (runner.context) {
                 this.getTestStats(runner).context = runner.context;
@@ -509,12 +509,12 @@ var ReporterStats = function (_RunnableStats6) {
     }, {
         key: 'suiteEnd',
         value: function suiteEnd(runner) {
-            this.getSuiteStats(runner, ReporterStats.getIdentifier(runner)).complete();
+            this.getSuiteStats(runner, ReporterStats.getIdentifier(runner)).complete(runner._timestamp);
         }
     }, {
         key: 'runnerEnd',
         value: function runnerEnd(runner) {
-            this.getSpecStats(runner).complete();
+            this.getSpecStats(runner).complete(runner._timestamp);
         }
     }], [{
         key: 'getIdentifier',

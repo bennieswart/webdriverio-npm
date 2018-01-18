@@ -548,6 +548,8 @@ var Launcher = function () {
     }, {
         key: 'startInstance',
         value: function startInstance(specs, caps, cid, server) {
+            var _this3 = this;
+
             var config = this.configParser.getConfig();
             cid = this.getRunnerId(cid);
             var processNumber = this.processesStarted + 1;
@@ -588,27 +590,53 @@ var Launcher = function () {
             // If an arg appears multiple times the last occurrence is used
             var execArgv = [].concat((0, _toConsumableArray3.default)(defaultArgs), debugArgs, (0, _toConsumableArray3.default)(capExecArgs));
 
-            var childProcess = _child_process2.default.fork(_path2.default.join(__dirname, '/runner.js'), process.argv.slice(2), {
-                cwd: process.cwd(),
-                execArgv
-            });
+            var childProcess = void 0;
+            var retries = this.configParser.getConfig().specFileRetries || 0;
+            var spawn = function spawn() {
+                var messages = [];
+                var idx = _this3.processes.indexOf(childProcess);
 
-            this.processes.push(childProcess);
+                childProcess = _child_process2.default.fork(_path2.default.join(__dirname, '/runner.js'), process.argv.slice(2), {
+                    cwd: process.cwd(),
+                    execArgv
+                });
 
-            childProcess.on('message', this.messageHandler.bind(this, cid)).on('exit', this.endHandler.bind(this, cid));
+                _this3.processes.splice(idx === -1 ? _this3.processes.length : idx, 1, childProcess);
 
-            childProcess.send({
-                cid,
-                command: 'run',
-                configFile: this.configFile,
-                argv: this.argv,
-                caps,
-                processNumber,
-                specs,
-                server,
-                isMultiremote: this.isMultiremote()
-            });
+                childProcess.on('message', function (message) {
+                    message._timestamp = new Date();
+                    if (retries === 0) {
+                        _this3.messageHandler(cid, message);
+                    } else {
+                        messages.push(message);
+                    }
+                });
+                childProcess.on('exit', function (exitCode) {
+                    if (exitCode === 0 || retries === 0) {
+                        messages.forEach(function (message) {
+                            return _this3.messageHandler(cid, message);
+                        });
+                        _this3.endHandler(cid, exitCode);
+                    } else {
+                        retries--;
+                        spawn();
+                    }
+                });
 
+                childProcess.send({
+                    cid,
+                    command: 'run',
+                    configFile: _this3.configFile,
+                    argv: _this3.argv,
+                    caps,
+                    processNumber,
+                    specs,
+                    server,
+                    isMultiremote: _this3.isMultiremote()
+                });
+            };
+
+            spawn();
             this.processesStarted++;
         }
 
