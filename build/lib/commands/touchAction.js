@@ -72,7 +72,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             'press',
             { action: 'moveTo', selector: '//UIAApplication[1]/UIAElement[2]' },
             'release'
-        ])
+        ]))
     });
 
     :multiTouchAction.js
@@ -80,7 +80,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         // drag&drop with two fingers 200px down
         browser.touchAction([
             [{action: 'press', x:  10, y: 10}, { action: 'moveTo', x: 0, y: 200 }, 'release'],
-            [{action: 'press', x: 100, y: 10}, { action: 'moveTo', x: 0, y: 200 }, 'release']
+            [{action: 'press', x: 100, y: 10}, { action: 'moveTo', x: 0, y: 200 }, 'release']]
         ])
     })
  * </example>

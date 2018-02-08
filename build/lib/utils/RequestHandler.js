@@ -269,7 +269,7 @@ var RequestHandler = function () {
                     /**
                      * Resolve only if successful response
                      */
-                    if (!err && (0, _utilities.isSuccessfulResponse)(response)) {
+                    if (!err && (0, _utilities.isSuccessfulResponse)(body)) {
                         return resolve({ body, response });
                     }
 

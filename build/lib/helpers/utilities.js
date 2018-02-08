@@ -10,11 +10,7 @@ exports.isUnknownCommand = isUnknownCommand;
  * @param  {Object}  body  body payload of response
  * @return {Boolean}       true if request was successful
  */
-function isSuccessfulResponse() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        body = _ref.body,
-        statusCode = _ref.statusCode;
-
+function isSuccessfulResponse(body) {
     /**
      * response contains a body
      */
@@ -38,13 +34,6 @@ function isSuccessfulResponse() {
     }
 
     /**
-     * check status code
-     */
-    if (statusCode === 200) {
-        return true;
-    }
-
-    /**
      * that has no error property (Appium only)
      */
     if (body.value && (body.value.error || body.value.stackTrace || body.value.stacktrace)) {
@@ -62,7 +51,7 @@ function isUnknownCommand(err) {
     /**
      * when running browser driver directly
      */
-    if (err.message.match(/Invalid Command Method/) || err.message.match(/did not match a known command/) || err.message.match(/unknown command/) || err.message.match(/Driver info: driver\.version: unknown/) || err.message.match(/did not map to a valid resource/)) {
+    if (err.message.match(/(did not match a known command|unknown command)/)) {
         return true;
     }
 
