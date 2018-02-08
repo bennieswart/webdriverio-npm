@@ -48,18 +48,18 @@ var _sanitize2 = _interopRequireDefault(_sanitize);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RunnableStats = function () {
-    function RunnableStats(type, start) {
+    function RunnableStats(type) {
         (0, _classCallCheck3.default)(this, RunnableStats);
 
         this.type = type;
-        this.start = start || new Date();
+        this.start = new Date();
         this._duration = 0;
     }
 
     (0, _createClass3.default)(RunnableStats, [{
         key: 'complete',
-        value: function complete(end) {
-            this.end = end || new Date();
+        value: function complete() {
+            this.end = new Date();
             this._duration = this.end - this.start;
         }
     }, {
@@ -80,7 +80,7 @@ var RunnerStats = function (_RunnableStats) {
     function RunnerStats(runner) {
         (0, _classCallCheck3.default)(this, RunnerStats);
 
-        var _this = (0, _possibleConstructorReturn3.default)(this, (RunnerStats.__proto__ || (0, _getPrototypeOf2.default)(RunnerStats)).call(this, 'runner', runner._timestamp));
+        var _this = (0, _possibleConstructorReturn3.default)(this, (RunnerStats.__proto__ || (0, _getPrototypeOf2.default)(RunnerStats)).call(this, 'runner'));
 
         _this.uid = ReporterStats.getIdentifier(runner);
         _this.cid = runner.cid;
@@ -100,7 +100,7 @@ var SpecStats = function (_RunnableStats2) {
     function SpecStats(runner) {
         (0, _classCallCheck3.default)(this, SpecStats);
 
-        var _this2 = (0, _possibleConstructorReturn3.default)(this, (SpecStats.__proto__ || (0, _getPrototypeOf2.default)(SpecStats)).call(this, 'spec', runner._timestamp));
+        var _this2 = (0, _possibleConstructorReturn3.default)(this, (SpecStats.__proto__ || (0, _getPrototypeOf2.default)(SpecStats)).call(this, 'spec'));
 
         _this2.uid = ReporterStats.getIdentifier(runner);
         _this2.files = runner.specs;
@@ -119,7 +119,7 @@ var SuiteStats = function (_RunnableStats3) {
     function SuiteStats(runner) {
         (0, _classCallCheck3.default)(this, SuiteStats);
 
-        var _this3 = (0, _possibleConstructorReturn3.default)(this, (SuiteStats.__proto__ || (0, _getPrototypeOf2.default)(SuiteStats)).call(this, 'suite', runner._timestamp));
+        var _this3 = (0, _possibleConstructorReturn3.default)(this, (SuiteStats.__proto__ || (0, _getPrototypeOf2.default)(SuiteStats)).call(this, 'suite'));
 
         _this3.uid = ReporterStats.getIdentifier(runner);
         _this3.title = runner.title;
@@ -137,7 +137,7 @@ var TestStats = function (_RunnableStats4) {
     function TestStats(runner) {
         (0, _classCallCheck3.default)(this, TestStats);
 
-        var _this4 = (0, _possibleConstructorReturn3.default)(this, (TestStats.__proto__ || (0, _getPrototypeOf2.default)(TestStats)).call(this, 'test', runner._timestamp));
+        var _this4 = (0, _possibleConstructorReturn3.default)(this, (TestStats.__proto__ || (0, _getPrototypeOf2.default)(TestStats)).call(this, 'test'));
 
         _this4.uid = ReporterStats.getIdentifier(runner);
         _this4.title = runner.title;
@@ -156,7 +156,7 @@ var HookStats = function (_RunnableStats5) {
     function HookStats(runner) {
         (0, _classCallCheck3.default)(this, HookStats);
 
-        var _this5 = (0, _possibleConstructorReturn3.default)(this, (HookStats.__proto__ || (0, _getPrototypeOf2.default)(HookStats)).call(this, 'hook', runner._timestamp));
+        var _this5 = (0, _possibleConstructorReturn3.default)(this, (HookStats.__proto__ || (0, _getPrototypeOf2.default)(HookStats)).call(this, 'hook'));
 
         _this5.uid = ReporterStats.getIdentifier(runner);
         _this5.title = runner.title;
@@ -220,13 +220,13 @@ var ReporterStats = function (_RunnableStats6) {
                         test.runningBrowser += '\nrunning';
 
                         if (caps.browserName) {
-                            test.runningBrowser += ` ${caps.browserName}`;
+                            test.runningBrowser += ' ' + caps.browserName;
                         }
                         if (caps.version) {
-                            test.runningBrowser += ` (v${caps.version})`;
+                            test.runningBrowser += ' (v' + caps.version + ')';
                         }
                         if (caps.platform) {
-                            test.runningBrowser += ` on ${caps.platform}`;
+                            test.runningBrowser += ' on ' + caps.platform;
                         }
 
                         var host = _this7.runners[pid].config.host;
@@ -262,7 +262,7 @@ var ReporterStats = function (_RunnableStats6) {
     }, {
         key: 'getRunnerStats',
         value: function getRunnerStats(runner) {
-            if (!this.runners[runner.cid]) throw Error(`Unrecognised runner [${runner.cid}]`);
+            if (!this.runners[runner.cid]) throw Error('Unrecognised runner [' + runner.cid + ']');
             return this.runners[runner.cid];
         }
     }, {
@@ -285,7 +285,7 @@ var ReporterStats = function (_RunnableStats6) {
         value: function getSpecStats(runner) {
             var runnerStats = this.getRunnerStats(runner);
             var specHash = this.getSpecHash(runner);
-            if (!runnerStats.specs[specHash]) throw Error(`Unrecognised spec [${specHash}] for runner [${runner.cid}]`);
+            if (!runnerStats.specs[specHash]) throw Error('Unrecognised spec [' + specHash + '] for runner [' + runner.cid + ']');
             return runnerStats.specs[specHash];
         }
     }, {
@@ -335,7 +335,7 @@ var ReporterStats = function (_RunnableStats6) {
                 return;
             }
 
-            hookStats.complete(runner._timestamp);
+            hookStats.complete();
             this.counts.hooks++;
         }
     }, {
@@ -359,7 +359,7 @@ var ReporterStats = function (_RunnableStats6) {
                 uid = ReporterStats.getIdentifier(runner);
             }
 
-            if (!suiteStats.hooks[uid]) throw Error(`Unrecognised hook [${runner.title}] for suite [${runner.parent}]`);
+            if (!suiteStats.hooks[uid]) throw Error('Unrecognised hook [' + runner.title + '] for suite [' + runner.parent + ']');
             return suiteStats.hooks[uid];
         }
     }, {
@@ -378,34 +378,27 @@ var ReporterStats = function (_RunnableStats6) {
                 uid = ReporterStats.getIdentifier(runner);
             }
 
-            if (!suiteStats.tests[uid]) throw Error(`Unrecognised test [${runner.title}] for suite [${runner.parent}]`);
+            if (!suiteStats.tests[uid]) throw Error('Unrecognised test [' + runner.title + '] for suite [' + runner.parent + ']');
             return suiteStats.tests[uid];
         }
     }, {
         key: 'output',
         value: function output(type, runner) {
             runner.time = new Date();
-            var storedRunner = (0, _deepmerge2.default)({}, runner, { clone: true });
             // Remove the screenshot data to reduce RAM usage on the parent process
-            var knownScreenshotCommands = ['saveDocumentScreenshot', 'saveViewportScreenshot', 'saveElementScreenshot'];
-
             if (type === 'screenshot') {
-                storedRunner.data = null;
-            } else if (type === 'result' && runner.requestOptions && runner.requestOptions.uri.path.indexOf('screenshot') !== -1) {
-                storedRunner.body = null;
-            } else if (type === 'aftercommand' && knownScreenshotCommands.indexOf(runner.command) !== -1) {
-                storedRunner.result = null;
+                runner.data = null;
             }
             if (ReporterStats.getIdentifier(runner) && runner.parent) {
                 this.getTestStats(runner).output.push({
-                    type,
-                    payload: storedRunner
+                    type: type,
+                    payload: runner
                 });
             } else {
                 // Log commands, results and screenshots executed outside of a test
                 this.getSpecStats(runner).output.push({
-                    type,
-                    payload: storedRunner
+                    type: type,
+                    payload: runner
                 });
             }
         }
@@ -435,7 +428,7 @@ var ReporterStats = function (_RunnableStats6) {
              */
             var message = 'Ensure the done() callback is being called in this test.';
             if (runner.err && runner.err.message && runner.err.message.indexOf(message) > -1) {
-                var replacement = `The execution in the test "${runner.parent} ${runner.title}" took ` + 'too long. Try to reduce the run time or increase your timeout for ' + 'test specs (http://webdriver.io/guide/testrunner/timeouts.html).';
+                var replacement = 'The execution in the test "' + runner.parent + ' ' + runner.title + '" took ' + 'too long. Try to reduce the run time or increase your timeout for ' + 'test specs (http://webdriver.io/guide/testrunner/timeouts.html).';
                 runner.err.message = runner.err.message.replace(message, replacement);
                 runner.err.stack = runner.err.stack.replace(message, replacement);
             }
@@ -500,18 +493,18 @@ var ReporterStats = function (_RunnableStats6) {
     }, {
         key: 'testEnd',
         value: function testEnd(runner) {
-            this.getTestStats(runner).complete(runner._timestamp);
+            this.getTestStats(runner).complete();
             this.counts.tests++;
         }
     }, {
         key: 'suiteEnd',
         value: function suiteEnd(runner) {
-            this.getSuiteStats(runner, ReporterStats.getIdentifier(runner)).complete(runner._timestamp);
+            this.getSuiteStats(runner, ReporterStats.getIdentifier(runner)).complete();
         }
     }, {
         key: 'runnerEnd',
         value: function runnerEnd(runner) {
-            this.getSpecStats(runner).complete(runner._timestamp);
+            this.getSpecStats(runner).complete();
         }
     }], [{
         key: 'getIdentifier',

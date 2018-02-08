@@ -91,9 +91,6 @@ exports.config = {
     // Enables colors for log output.
     coloredLogs: true,
     //
-    // Warns when a deprecated command is used
-    deprecationWarnings: true,
-    //
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
     bail: 0,
@@ -101,10 +98,8 @@ exports.config = {
     // Saves a screenshot to a given path if a command fails.
     screenshotPath: '<%= answers.screenshotPath %>',
     //
-    // Set a base URL in order to shorten url command calls. If your `url` parameter starts
-    // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
-    // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
-    // gets prepended directly.
+    // Set a base URL in order to shorten url command calls. If your url parameter starts
+    // with "/", then the base url gets prepended.
     baseUrl: '<%= answers.baseUrl %>',
     //
     // Default timeout for all waitFor* commands.
@@ -155,7 +150,7 @@ exports.config = {
     //
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
-    // see also: http://webdriver.io/guide/reporters/dot.html
+    // see also: http://webdriver.io/guide/testrunner/reporters.html
     <% if(answers.reporters.length) {
     %>reporters: ['<%- answers.reporters.map(function(reporter) {
         return reporter.slice(5, -9);

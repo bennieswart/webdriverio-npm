@@ -1,7 +1,7 @@
-name: Custom Reporter
-category: testrunner
+name: customreporter
+category: reporters
 tags: guide
-index: 10
+index: 8
 title: WebdriverIO - Custom Reporter
 ---
 
