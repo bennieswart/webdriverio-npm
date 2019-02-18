@@ -300,7 +300,9 @@ var RequestHandler = function () {
                         return reject(_error);
                     }
 
-                    _this2.request(fullRequestOptions, totalRetryCount, ++retryCount).then(resolve).catch(reject);
+                    setTimeout(() => {
+                        _this2.request(fullRequestOptions, totalRetryCount, ++retryCount).then(resolve).catch(reject);
+                    }, Math.pow(2, Math.min(retryCount + 7, 10)));
                 });
             });
         }
